@@ -1,0 +1,252 @@
+###################################################################################################################
+Prompt: I need an interface to handle all links that do not start with "/api/".
+code:
+app.get('*', (req, res, next) => {
+  if (req.path.includes('.')) {
+    return next();
+  }
+Prompt: Rewrite using regular expressions
+code:
+app.get(/^(?!\/api\/).*/, (req, res, next) => {
+  if (req.path.includes('.')) {
+    return next();
+  }
+
+  res.sendFile(path.join(angularDistPath, 'index.html'));
+});
+
+explanation:
+This modification can only handle the front-end routing and not intercept /api/* and static resources with a dot. It will match all paths that are not starting with /api/ and return index.html.
+###################################################################################################################
+Prompt: Start the server
+code:
+app.listen(PORT, () => {
+  console.log(`Backend listening on http://localhost:${PORT}`);
+});
+Prompt: Considering the need to connect to MongoDB, I would like to have MongoDB started at the same time as the application, for the convenience of communication.
+code:
+async function start() {
+  try {
+    db = await connectToDB(); 
+    console.log('Database ready');
+
+    app.listen(PORT, () => {
+      console.log(`✅ Backend listening on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ Failed to connect to DB at startup:', err);
+    process.exit(1);
+  }
+}
+explanation:
+Connect to MongoDB and check if the connection is successful. This way, any backend errors can be detected in a timely manner.
+###################################################################################################################
+Prompt: Close the dropdown when inputting in the input box.
+code:
+  onKeywordBlur() {
+    setTimeout(() => {
+      this.isSuggestionOpen = false;
+    });
+  }
+Prompt: I hope to add a bit of delay so that the click can trigger the action.
+code:
+  onKeywordBlur() {
+    setTimeout(() => {
+      this.isSuggestionOpen = false;
+    }, 200);
+  }
+explanation:
+Improve user experience
+###################################################################################################################
+Prompt: I hope that on the search page, there will be options to "Save" and "Unsave" entries.
+code:
+toggleFavorite(ev: EventItem, e: MouseEvent): void {
+    this.favoriteService.toggleFavorite(ev);
+
+    if (this.favoriteService.isFavorite(ev.id)) {
+      this.toastService.show({
+        type: 'success',
+        message: `${ev.name} added to favorites!`,
+      });
+    } else {
+      this.toastService.show({
+        type: 'success',
+        message: `${ev.name} removed from favorites!`,
+      });
+    }
+  }
+Prompt: When the heart icon is clicked, since it is a clickable card, it will automatically redirect to the detail page. I hope it can avoid redirecting to the detail page.
+code:
+toggleFavorite(ev: EventItem, e: MouseEvent): void {
+    event.stopPropagation(); 
+
+    this.favoriteService.toggleFavorite(ev);
+
+    if (this.favoriteService.isFavorite(ev.id)) {
+      this.toastService.show({
+        type: 'success',
+        message: `${ev.name} added to favorites!`,
+      });
+    } else {
+      this.toastService.show({
+        type: 'success',
+        message: `${ev.name} removed from favorites!`,
+      });
+    }
+  }
+explanation: Conform to the page logic and enhance the user experience
+###################################################################################################################
+Prompt: When I input on the search page, I hope to receive some suggestions.
+code:
+  onKeywordInput(value: string): void {
+    this.keywords = value;
+  
+    if (this.suggestTimeout) {
+      clearTimeout(this.suggestTimeout);
+    }
+  
+    this.suggestTimeout = setTimeout(() => {
+      this.fetchSuggestions(value.trim());
+    }, 300);
+  }  
+
+Prompt: I hope that if the input is cleared, the dropdown will be automatically closed and the loading process will be stopped.
+code:
+  onKeywordInput(value: string): void {
+    this.keywords = value;
+  
+    if (!value || !value.trim()) {
+      this.suggestions = [];
+      this.isSuggestionOpen = false;
+      this.isSuggestLoading = false;
+      if (this.suggestTimeout) {
+        clearTimeout(this.suggestTimeout);
+      }
+      return;
+    }
+  
+    if (this.suggestTimeout) {
+      clearTimeout(this.suggestTimeout);
+    }
+  
+    this.suggestTimeout = setTimeout(() => {
+      this.fetchSuggestions(value.trim());
+    }, 300);
+  }  
+explanation:Conform to the page logic and enhance the user experience
+###################################################################################################################
+Prompt: I would like to display the date and time.
+code:
+  getDateTimeLabel(ev: any): string | null {
+    const date = (ev.date || ev.localDate).toString().trim();
+    const time = (ev.time || ev.localTime).toString().trim();
+    const label = [date, time].filter(Boolean).join(', ');
+    return label || null;
+  }
+
+Prompt: I hope it won't be displayed when the screen is empty.
+code:
+  getDateTimeLabel(ev: any): string | null {
+    const date = (ev.date || ev.localDate || '').toString().trim();
+    const time = (ev.time || ev.localTime || '').toString().trim();
+    const label = [date, time].filter(Boolean).join(', ');
+    return label || null;
+  }
+explanation: Make the page more attractive
+###################################################################################################################
+Prompt: I hope that no result will be displayed with a prompt.
+code:
+  <div class="search-hint" *ngIf="events.length === 0">
+    <div class="hint-icon">🔍</div>
+    <div class="hint-text">
+      Enter search criteria and click the Search button to find events.
+    </div>
+  </div>
+
+Prompt: The "need" should only be displayed when there are no results yet and there is no "no result" prompt.
+  <div class="search-hint" *ngIf="events.length === 0 && !noResults">
+    <div class="hint-icon">🔍</div>
+    <div class="hint-text">
+      Enter search criteria and click the Search button to find events.
+    </div>
+  </div>
+
+explanation: Strengthen logical reasoning and prevent display errors
+###################################################################################################################
+Prompt: I would like to select an image from Ticket Master as the cover.
+code:
+  const images = tmEvent.images || [];
+
+Prompt: I hope the picture is clear enough.
+code: 
+  const images: any[] = e?.images || [];
+  const bestImage = images.reduce((best, img) => {
+      if (!best) return img;
+      if ((img.width || 0) > (best.width || 0)) return img;
+      return best;
+    }, null);
+explanation: Since the pictures are not always very clear, we will select the one that is the clearest for display.
+###################################################################################################################
+Prompt: I hope to be able to display the image and provide me with a CSS format.
+code:
+  .event-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+Prompt: I hope the picture won't distort or go beyond the boundaries.
+code:
+  .event-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+explanation:Make the interface more attractive.
+###################################################################################################################
+Prompt: I hope I can click the button to display the detailed information of the artist.
+code:
+      <button
+    *ngIf="isMusicEvent"
+    class="tab"
+    (click)="setActiveTab('artist')"
+    >
+      Artist
+    </button>
+
+Prompt: Add a condition: if it is not a music type, then do not display.
+code:
+ <button
+    *ngIf="isMusicEvent"
+    class="tab"
+    [class.active]="activeTab === 'artist'"
+    (click)="setActiveTab('artist')"
+    >
+      Artist
+    </button>
+    
+    <button
+      *ngIf="!isMusicEvent"
+      class="tab disabled"
+      disabled
+    >
+      Artist
+    </button>
+    
+    <button
+      class="tab"
+      [class.active]="activeTab === 'venue'"
+      (click)="setActiveTab('venue')"
+    >
+      Venue
+    </button>
+  </div>
+
+explanation:Add judgment on the types and make the conditions stricter.

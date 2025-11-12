@@ -1,0 +1,30 @@
+<div class="toast-wrapper" *ngIf="visible && data">
+  <div
+    class="toast"
+    [class.toast-success]="data?.type === 'success'"
+    [class.toast-info]="data?.type === 'info'"
+  >
+    <div class="toast-icon">
+      <span *ngIf="data?.type === 'success'">✔</span>
+      <span *ngIf="data?.type !== 'success'">i</span>
+    </div>
+
+    <div class="toast-text">
+      <div class="toast-message">
+        {{ data?.message }}
+      </div>
+      <div class="toast-sub" *ngIf="data?.subMessage">
+        {{ data?.subMessage }}
+      </div>
+    </div>
+
+    <button
+      *ngIf="data?.actionText"
+      class="toast-action"
+      type="button"
+      (click)="onActionClick()"
+    >
+      {{ data?.actionText }}
+    </button>
+  </div>
+</div>

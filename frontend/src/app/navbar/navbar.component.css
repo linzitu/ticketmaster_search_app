@@ -1,0 +1,63 @@
+/* 整体导航栏 */
+.navbar {
+    width: 100%;
+    height: 56px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+}
+
+/* 左侧标题 */
+.navbar-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* 右侧链接整体 */
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* 链接基础样式 */
+a.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+/* ✅ 全面去除所有下划线与蓝色高亮 */
+a.nav-link,
+a.nav-link:link,
+a.nav-link:visited,
+a.nav-link:hover,
+a.nav-link:active,
+a.nav-link:focus {
+    text-decoration: none !important;
+    color: #6b7280 !important;
+    outline: none;
+    box-shadow: none;
+}
+
+/* 悬停和激活时颜色变深 */
+a.nav-link.active,
+a.nav-link:hover {
+    color: #111827 !important;
+}
+
+/* 图标样式 */
+.nav-icon {
+    font-size: 16px;
+    line-height: 1;
+}

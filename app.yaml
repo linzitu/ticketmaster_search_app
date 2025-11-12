@@ -1,0 +1,11 @@
+runtime: nodejs20
+env: standard
+
+env_variables:
+  MONGODB_URI: "mongodb+srv://zeliantu1998_db_user:TVvBvQJ87Y842jC3@cluster0.1qljoga.mongodb.net/?appName=Cluster0"
+  MONGODB_DBNAME: "hw3"
+
+handlers:
+  # 静态文件直接交给 Node 处理（因为我们在 Express 里用了 express.static）
+  - url: /.*
+    script: auto

@@ -1,0 +1,272 @@
+<div class="search-container">
+  <!-- 使用 ngForm，方便拿到 submitted 状态 -->
+  <form
+    class="search-form"
+    #searchForm="ngForm"
+    (ngSubmit)="onSearch(searchForm)"
+  >
+    <!-- Keywords -->
+    <div
+      class="form-group keyword-group"
+      [ngClass]="{
+        'group-error':
+          keywordsCtrl.invalid && (keywordsCtrl.touched || searchForm.submitted)
+      }"
+    >
+      <label class="field-label">Keywords <span class="required">*</span></label>
+      <div class="keyword-input-wrapper">
+        <input
+          type="text"
+          class="text-input"
+          name="keywords"
+          placeholder="Search for events..."
+          required
+          autocomplete="off"
+          [(ngModel)]="keywords"
+          #keywordsCtrl="ngModel"
+          (input)="onKeywordInput($event.target.value)"
+          (focus)="onKeywordFocus()"
+          (blur)="onKeywordBlur()"
+        />
+        <!-- 小箭头图标 -->
+        <div class="dropdown-arrow" *ngIf="!isSuggestLoading">
+          <span *ngIf="!isSuggestionOpen">▼</span>
+          <span *ngIf="isSuggestionOpen">▲</span>
+        </div>
+        <!-- 清除按钮 -->
+        <div
+        class="keyword-clear"
+        *ngIf="keywords && !isSuggestLoading"
+        (click)="clearKeywords()"
+        >
+        ✕
+        </div>
+        <!-- 新增 spinner -->
+        <div class="keyword-spinner" *ngIf="isSuggestLoading">
+          <span class="spinner-icon"></span>
+        </div>
+      </div>
+
+
+      <div
+        class="error-message"
+        *ngIf="
+          keywordsCtrl.invalid &&
+          (keywordsCtrl.touched || searchForm.submitted)
+        "
+      >
+        Please enter some keywords
+      </div>
+
+      <!-- Ticketmaster Suggest 自动补全下拉 -->
+      <ul
+        class="keyword-suggest-list"
+        *ngIf="isSuggestionOpen && suggestions?.length"
+      >
+        <li
+          class="keyword-suggest-item"
+          *ngFor="let s of suggestions"
+          (mousedown)="pickSuggestion(s)"
+        >
+          {{ s }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Category -->
+    <div class="form-group category-group">
+      <label class="field-label">
+        Category <span class="required">*</span>
+      </label>
+      <select class="select-input" name="category" [(ngModel)]="category">
+        <option value="all">All</option>
+        <option value="music">Music</option>
+        <option value="sports">Sports</option>
+        <option value="arts">Arts &amp; Theatre</option>
+        <option value="film">Film</option>
+        <option value="miscellaneous">Miscellaneous</option>
+      </select>
+    </div>
+
+    <!-- Location + Auto Detect -->
+    <div
+      class="form-group location-group"
+      [ngClass]="{
+        'group-error':
+          !autoDetectLocation &&
+          locationCtrl.invalid &&
+          (locationCtrl.touched || searchForm.submitted)
+      }"
+    >
+      <div class="location-header">
+        <span class="field-label">Location <span class="required">*</span></span>
+        <label class="auto-detect">
+          <span>Auto-detect Location</span>
+          <input
+            type="checkbox"
+            class="toggle-checkbox"
+            name="autoDetectLocation"
+            [(ngModel)]="autoDetectLocation"
+            (change)="onAutoDetectChange()"
+          />
+          <span class="toggle-switch"></span>
+        </label>
+      </div>
+
+      <input
+        type="text"
+        class="text-input"
+        name="location"
+        placeholder="Enter city, district or street..."
+        [required]="!autoDetectLocation"
+        [disabled]="autoDetectLocation"
+        [(ngModel)]="location"
+        #locationCtrl="ngModel"
+      />
+
+      <!-- ① 原来的必填校验：只有在关闭自动定位时才会触发 -->
+      <div
+        class="error-message"
+        *ngIf="
+          !autoDetectLocation &&
+          locationCtrl.invalid &&
+          (locationCtrl.touched || searchForm.submitted)
+        "
+      >
+        Location is required when auto-detect is off
+      </div>
+
+      <!-- ② 自动定位失败的错误提示（TS 里给 locError 赋值即可） -->
+      <div class="error-message" *ngIf="locError">
+        {{ locError }}
+      </div>
+
+      <!-- ③ 自动定位中的加载提示 -->
+      <div class="hint-text" *ngIf="autoDetectLocation && isLocLoading">
+        Detecting location...
+      </div>
+    </div>
+
+    <!-- Distance -->
+    <div
+      class="form-group distance-group"
+      [ngClass]="{
+        'group-error':
+          distanceCtrl.invalid &&
+          (distanceCtrl.dirty || distanceCtrl.touched || searchForm.submitted)
+      }"
+    >
+      <label class="field-label">
+        Distance <span class="required">*</span>
+      </label>
+
+      <div class="distance-field">
+        <input
+          type="number"
+          class="distance-input"
+          name="distance"
+          required
+          min="0"
+          max="100"
+          pattern="^[0-9]+$"
+          [(ngModel)]="distance"
+          #distanceCtrl="ngModel"
+        />
+        <span class="unit">miles</span>
+      </div>
+
+      <!-- 错误提示 -->
+      <div
+        class="error-message"
+        *ngIf="
+          distanceCtrl.invalid &&
+          (distanceCtrl.dirty || distanceCtrl.touched || searchForm.submitted)
+        "
+      >
+        <!-- 情况 1 & 2：为空 / 非数字 -->
+        <span
+          *ngIf="distanceCtrl.errors?.required || distanceCtrl.errors?.pattern"
+        >
+          Distance must be a number
+        </span>
+
+        <!-- 情况 3：超过 100 -->
+        <span *ngIf="distanceCtrl.errors?.max">
+          Distance cannot exceed 100
+        </span>
+      </div>
+    </div>
+
+    <!-- Search Button -->
+    <div class="button-group">
+      <button type="submit" class="search-button">
+        <span class="icon">🔍</span>
+        <span>Search Events</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Hint：只有在还没有任何结果、也没有“无结果”提示时才显示 -->
+<div class="search-hint" *ngIf="events.length === 0 && !noResults">
+  <div class="hint-icon">🔍</div>
+  <div class="hint-text">
+    Enter search criteria and click the Search button to find events.
+  </div>
+</div>
+
+<!-- 结果列表区域 -->
+<div class="results-container" *ngIf="events.length > 0">
+  <div
+    class="event-card"
+    *ngFor="let ev of events"
+    (click)="goToDetail(ev.id)"
+  >
+    <!-- 图片 + 左上类别 + 右上时间 -->
+    <div class="event-image-wrapper">
+      <img class="event-image" [src]="ev.imageUrl" [alt]="ev.name" />
+
+      <!-- 左上：类别，只在识别到 5 种之一时显示 -->
+      <div class="event-category-pill" *ngIf="getCategoryLabel(ev) as cat">
+        {{ cat }}
+      </div>
+
+      <!-- 右上：时间，没有就不显示 -->
+      <div class="event-date-pill" *ngIf="getDateTimeLabel(ev) as dt">
+        {{ dt }}
+      </div>
+    </div>
+
+    <!-- 卡片下半部分：标题 + 场馆 + 收藏 -->
+    <div class="event-info">
+      <!-- 左边：标题 + 场馆 -->
+      <div class="event-main">
+        <div class="event-name">
+          {{ ev.name }}
+        </div>
+
+        <div class="event-venue">
+          {{ ev.venue }}
+        </div>
+      </div>
+
+      <!-- 右边：爱心收藏 -->
+      <button
+        class="favorite-btn"
+        type="button"
+        (click)="toggleFavorite(ev, $event)"
+      >
+        <span
+          class="heart-icon"
+          [class.heart-filled]="isFavorite(ev)"
+        >
+          ♥
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="no-results" *ngIf="noResults">
+  No events found.
+</div>

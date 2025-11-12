@@ -1,0 +1,934 @@
+[hidden] {
+    display: none !important;
+}
+
+.detail-page {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 16px 24px 40px;
+}
+
+/* 顶部返回按钮 */
+
+.detail-top-bar {
+    margin-bottom: 12px;
+}
+
+.back-link {
+    border: none;
+    background: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #111827;
+    padding: 0;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* 标题 + actions */
+
+.detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.detail-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Buy button */
+
+.buy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.buy-button:hover {
+    background-color: #222;
+}
+
+.buy-button::after {
+    content: '↗';
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.buy-button.disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+}
+
+/* 收藏按钮 —— 和 search page 一样 */
+
+.favorite-btn {
+    flex: 0 0 32px;
+    /* 不参与伸缩，固定宽度 */
+    width: 32px;
+    height: 32px;
+    margin-left: 12px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition:
+        background-color 0.12s ease,
+        border-color 0.12s ease,
+        transform 0.12s ease;
+}
+
+.favorite-btn:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.heart-icon {
+    font-size: 16px;
+    color: #d1d5db;
+    transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.heart-filled {
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+/* Tabs */
+
+.detail-tabs {
+    display: flex;
+    margin-top: 12px;
+    margin-bottom: 16px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background-color: #f9fafb;
+}
+
+.tab {
+    flex: 1;
+    padding: 8px 0;
+    font-size: 14px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: #111827;
+    color: #ffffff;
+}
+
+.tab:disabled {
+    color: #9ca3af;
+    cursor: default;
+}
+
+/* 主体布局 */
+.detail-main,
+.artist-main,
+.venue-main {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
+}
+
+.detail-main {
+    display: grid;
+    grid-template-columns: 1.1fr 1.3fr;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Info 区 —— 一列排布 */
+
+.info-section {
+    padding-top: 4px;
+    font-size: 14px;
+}
+
+.info-item {
+    margin-bottom: 16px;
+}
+
+.info-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    color: #111827;
+}
+
+/* Ticket Status 小胶囊 */
+
+.status-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 4px;
+    text-align: center;
+}
+
+/* 不同状态对应颜色 */
+.status-pill.on-sale {
+    background-color: #28a745;
+    /* 绿色 */
+}
+
+.status-pill.off-sale {
+    background-color: #dc3545;
+    /* 红色 */
+}
+
+.status-pill.postponed {
+    background-color: #fd7e14;
+    /* 橙色 */
+}
+
+.status-pill.rescheduled {
+    background-color: #ff9800;
+    /* 浅橙 */
+}
+
+.status-pill.canceled {
+    background-color: #000000;
+    /* 黑色 */
+}
+
+/* Share 按钮 */
+
+.share-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+    text-decoration: none;
+    color: #111827;
+    margin-right: 8px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.share-icons a:hover {
+    background-color: #f3f4f6;
+}
+
+/* Seatmap 区 */
+
+.seatmap-section {
+    border-radius: 16px;
+    background-color: #f9fafb;
+    padding: 12px;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seatmap-image {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+.seatmap-placeholder {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Loading / Error */
+
+.detail-loading,
+.detail-error {
+    text-align: center;
+    margin-top: 40px;
+    color: #6b7280;
+}
+
+/* ============================= */
+/* Artist Section (Spotify Info) */
+/* ============================= */
+
+.artist-main {
+    margin-top: 16px;
+    padding: 24px 16px 32px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+/* 歌手头部卡片 */
+.artist-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 860px;
+    margin: 0 0 15px 15px;
+    /* ✅ 左移一些 */
+    justify-content: flex-start;
+    /* ✅ 确保靠左排列 */
+}
+
+
+.artist-cover img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+}
+
+.artist-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+}
+
+.artist-meta h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.artist-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.artist-stats span {
+    white-space: nowrap;
+}
+
+.spotify-button {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background-color: #111827;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.spotify-button:hover {
+    background-color: #000;
+    transform: translateY(-1px);
+}
+
+/* Albums 区域 */
+
+.albums-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.albums-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 16px;
+}
+
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.album-card {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 260px;
+}
+
+.album-cover img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.album-info {
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.album-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.3;
+}
+
+.album-meta {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.album-link {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #111827;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.album-link:hover {
+    text-decoration: underline;
+}
+
+/* 共用的小提示样式 */
+.empty-text {
+    font-size: 14px;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* Venue Section */
+.venue-main {
+    margin-top: 16px;
+    padding: 24px 16px 32px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.venue-header {
+    display: flex;
+    /* ✅ 横向排布 */
+    justify-content: space-between;
+    /* 左右两端对齐 */
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.venue-name {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.venue-address {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #555;
+    font-size: 14px;
+}
+
+.venue-map-btn {
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    font-size: 12px;
+    background-color: #fff;
+    text-decoration: none;
+    color: #111;
+    transition: background-color 0.2s ease;
+}
+
+.venue-map-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.venue-body {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.venue-image img {
+    width: 340px;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    object-fit: cover;
+}
+
+.venue-details {
+    flex: 1;
+}
+
+.venue-section {
+    margin-bottom: 16px;
+}
+
+.venue-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.venue-section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.venue-actions {
+    margin-top: 20px;
+}
+
+.venue-events-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background-color: #111827;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.venue-events-btn:hover {
+    background-color: #000;
+    transform: translateY(-1px);
+}
+
+/* ==========
+   响应式优化：Detail 页面在手机端单列显示
+   与老师示例图一致（信息在上、Seatmap 在下）
+   ========== */
+@media (max-width: 768px) {
+
+    /* 整体容器左右留白缩小 */
+    .detail-page {
+        padding: 12px 16px 40px;
+    }
+
+    /* 顶部标题与按钮换行显示 */
+    .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* Buy Ticket 和收藏按钮靠左堆叠 */
+    .detail-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    /* 主体区域改为上下两块（Info + Seatmap） */
+    .detail-main {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Info 部分内边距调整，文字更贴合屏幕 */
+    .info-section {
+        padding: 0;
+        font-size: 15px;
+    }
+
+    .info-item {
+        margin-bottom: 12px;
+    }
+
+    .info-label {
+        font-size: 13px;
+    }
+
+    /* Seatmap 改为整行显示并居中 */
+    .seatmap-section {
+        padding: 12px;
+        background-color: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .seatmap-image {
+        width: 100%;
+        height: auto;
+        max-width: 480px;
+        border-radius: 12px;
+    }
+
+    /* 分享按钮居左对齐并增加间距 */
+    .share-icons {
+        margin-top: 4px;
+    }
+
+    .share-icons a {
+        margin-right: 6px;
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Tabs 在小屏幕下字体略小、边距减小 */
+    .detail-tabs {
+        margin-top: 8px;
+        margin-bottom: 12px;
+    }
+
+    .tab {
+        font-size: 13px;
+        padding: 8px 0;
+    }
+}
+
+/* ====== Seatmap 占位符优化：即使 N/A 也撑满区域 ====== */
+.seatmap-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    width: 100%;
+    min-height: 280px;
+    /* ✅ 默认至少有一定高度 */
+    box-sizing: border-box;
+}
+
+/* 如果有图片时保持比例 */
+.seatmap-image {
+    width: 100%;
+    height: auto;
+    max-width: 480px;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+/* 没有图片时占位文字居中、字号更醒目 */
+.seatmap-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 16px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* ==========
+   Artist 页面：手机端布局优化
+   ========== */
+@media (max-width: 768px) {
+
+    /* 整体卡片稍微紧凑一点 */
+    .artist-main {
+        padding: 16px 12px 24px;
+    }
+
+    /* 头像 + 文案区域：保持左右排，但更紧凑，靠左 */
+    .artist-header {
+        margin: 0 0 16px 0;
+        padding: 0;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    /* 封面图缩小，接近老师截图大小 */
+    .artist-cover img {
+        width: 110px;
+        height: 110px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    /* 文字区宽度随屏幕自动缩放 */
+    .artist-meta {
+        flex: 1;
+        gap: 6px;
+    }
+
+    .artist-meta h2 {
+        font-size: 18px;
+        line-height: 1.25;
+    }
+
+    .artist-stats {
+        font-size: 13px;
+        gap: 4px 12px;
+    }
+
+    .spotify-button {
+        margin-top: 4px;
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+
+    /* Albums 标题与网格：在手机上两列排布，类似老师截图 */
+    .albums-section {
+        margin-top: 8px;
+    }
+
+    .albums-section h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .albums-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* 两列 */
+        gap: 12px;
+    }
+
+    .album-card {
+        min-height: 0;
+        /* 让卡片高度自适应内容 */
+    }
+
+    .album-cover img {
+        height: 140px;
+    }
+
+    .album-title {
+        font-size: 13px;
+    }
+
+    .album-meta {
+        font-size: 11px;
+    }
+}
+
+/* ==========
+   Venue 页面：手机端布局优化
+   ========== */
+@media (max-width: 768px) {
+    .venue-main {
+        padding: 16px 12px 24px;
+    }
+
+    /* 顶部标题 + 地址 + 按钮：从左右排改成上下堆叠 */
+    .venue-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .venue-name {
+        font-size: 18px;
+        line-height: 1.3;
+    }
+
+    .venue-address {
+        font-size: 13px;
+        flex-wrap: wrap;
+    }
+
+    /* See Events 按钮靠左，避免挤到右边出屏 */
+    .venue-actions,
+    .venue-header .venue-actions {
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    .venue-events-btn {
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+
+    /* 主体从左右两列 → 上下两块（图片在上，文字在下） */
+    .venue-body {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .venue-image {
+        width: 100%;
+    }
+
+    .venue-image img {
+        width: 100%;
+        /* 关键：图片永远不超过屏幕宽度 */
+        max-width: 480px;
+        height: auto;
+        border-radius: 12px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .venue-details {
+        width: 100%;
+    }
+
+    /* 文本区域允许自动换行，避免横向滚动 */
+    .venue-section p {
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* ==========
+   Detail Header 优化：标题与按钮同行
+   ========== */
+.detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    /* ✅ 避免太长时换行挤出屏幕 */
+    gap: 8px 12px;
+    /* 调整间距 */
+}
+
+/* 左边标题稍小一点 */
+.detail-title {
+    font-size: 20px;
+    /* ✅ 比原来的 24px 小一点 */
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    flex: 1;
+    /* ✅ 占据剩余空间，让按钮靠右 */
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* 按钮区域靠右对齐 */
+.detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+    /* 不压缩按钮 */
+}
+
+/* 手机端再略微紧凑 */
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 18px;
+    }
+
+    .detail-header {
+        align-items: flex-start;
+        gap: 6px 8px;
+    }
+
+    .buy-button {
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+
+    .favorite-btn {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* 让手机端标题 + Buy Tickets + ❤️ 和老师截图一样一行显示 */
+@media (max-width: 768px) {
+    .detail-header {
+        flex-direction: row;
+        /* 从 column 改回 row */
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .detail-actions {
+        width: auto;
+        /* 不再占满一整行 */
+        justify-content: flex-end;
+    }
+}
+
+/* ==========
+   Venue 地址行：让地址和箭头在同一行
+   ========== */
+.venue-address {
+    display: flex;
+    align-items: center;
+    /* ✅ 垂直居中对齐 */
+    gap: 6px;
+    /* ✅ 文字与箭头的间距 */
+    flex-wrap: nowrap;
+    /* ✅ 不换行，防止箭头掉下去 */
+}
+
+/* 链接图标样式微调，使其大小与文字匹配 */
+.venue-address a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid #d1d5db;
+    color: #111827;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.venue-address a:hover {
+    background-color: #f3f4f6;
+}

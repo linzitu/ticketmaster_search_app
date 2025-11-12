@@ -1,0 +1,365 @@
+<div class="detail-page">
+  <!-- 错误提示（有错就显示，没有就什么都不动） -->
+  <div class="detail-error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- 顶部 Back to Search -->
+  <div class="detail-top-bar">
+    <button class="back-link" (click)="goBack()">← Back to Search</button>
+  </div>
+
+  <!-- 标题 + 按钮 -->
+  <div class="detail-header">
+    <h1 class="detail-title">
+      {{ event?.name || 'N/A' }}
+    </h1>
+
+    <div class="detail-actions">
+      <!-- Buy Tickets -->
+      <a
+        class="buy-button"
+        [href]="event?.buyTicketUrl || null"
+        target="_blank"
+        rel="noopener noreferrer"
+        [class.disabled]="!event?.buyTicketUrl"
+      >
+        Buy Tickets
+      </a>
+
+      <!-- 收藏按钮（和 search page 一样） -->
+      <button
+        class="favorite-btn"
+        type="button"
+        (click)="toggleFavoriteFromDetail()"
+      >
+        <span class="heart-icon" [class.heart-filled]="isFavorite">
+          ♥
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="detail-tabs">
+    <button
+      class="tab"
+      [class.active]="activeTab === 'info'"
+      (click)="setActiveTab('info')"
+    >
+      Info
+    </button>
+
+    <button
+    *ngIf="isMusicEvent"
+    class="tab"
+    [class.active]="activeTab === 'artist'"
+    (click)="setActiveTab('artist')"
+    >
+      Artist
+    </button>
+    
+    <!-- 非音乐类也显示灰色 tab，但不能点击 -->
+    <button
+      *ngIf="!isMusicEvent"
+      class="tab disabled"
+      disabled
+    >
+      Artist
+    </button>
+    
+    <button
+      class="tab"
+      [class.active]="activeTab === 'venue'"
+      (click)="setActiveTab('venue')"
+    >
+      Venue
+    </button>
+  </div>
+
+  <!-- 主体区域：Info -->
+  <div [hidden]="activeTab !== 'info'" class="detail-main">
+    <!-- 左侧 Info 信息 -->
+    <div class="info-section">
+      <!-- Date -->
+      <div class="info-item">
+        <div class="info-label">Date</div>
+        <div class="info-value">
+          {{ event?.date || 'N/A' }}
+          <span *ngIf="event?.time">
+            , {{ event?.time }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Artist / Team -->
+      <div class="info-item">
+        <div class="info-label">Artist / Team</div>
+        <div class="info-value">
+          {{ event?.artistTeam || 'N/A' }}
+        </div>
+      </div>
+
+      <!-- Venue -->
+      <div class="info-item">
+        <div class="info-label">Venue</div>
+        <div class="info-value">
+          {{ event?.venue || event?.venue?.name || event?.venue || 'N/A' }}
+        </div>
+      </div>
+
+      <!-- Genres -->
+      <div class="info-item">
+        <div class="info-label">Genres</div>
+        <div class="info-value">
+          {{ event?.genres || 'N/A' }}
+        </div>
+      </div>
+
+      <!-- Ticket Status -->
+      <div class="info-item">
+        <div class="info-label">Ticket Status</div>
+        <div class="info-value">
+          <span
+            class="status-pill"
+            [class.on-sale]="event?.ticketStatus?.toLowerCase() === 'on sale'"
+            [class.off-sale]="event?.ticketStatus?.toLowerCase() === 'off sale'"
+            [class.postponed]="
+              event?.ticketStatus?.toLowerCase() === 'postponed'
+            "
+            [class.rescheduled]="
+              event?.ticketStatus?.toLowerCase() === 'rescheduled'
+            "
+            [class.canceled]="event?.ticketStatus?.toLowerCase() === 'canceled'"
+          >
+            {{ event?.ticketStatus || 'N/A' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Share -->
+      <div class="info-item">
+        <div class="info-label">Share</div>
+        <div class="info-value">
+          <div class="share-icons">
+            <!-- Facebook -->
+            <a
+              [href]="facebookShareUrl || null"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on Facebook"
+            >
+              F
+            </a>
+
+            <!-- X / Twitter -->
+            <a
+              [href]="twitterShareUrl || null"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on X"
+            >
+              X
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧 Seatmap -->
+    <div class="seatmap-section">
+      <!-- 有 seatmapUrl 时显示图片 -->
+      <img
+        [src]="event?.seatmapUrl"
+        alt="Seatmap"
+        class="seatmap-image"
+        [hidden]="!event?.seatmapUrl"
+      />
+
+      <!-- 没有 seatmapUrl 时显示占位文字 -->
+      <div class="seatmap-placeholder" [hidden]="!!event?.seatmapUrl">
+        Seatmap N/A
+      </div>
+    </div>
+  </div>
+
+  <!-- Artist 主体：Spotify 歌手信息 + 专辑 -->
+  <div class="artist-main" [hidden]="activeTab !== 'artist'">
+    <!-- 加载中 -->
+    <div *ngIf="artistLoading" class="detail-loading">
+      Loading artist from Spotify...
+    </div>
+
+    <!-- 出错 -->
+    <div *ngIf="!artistLoading && artistError" class="detail-error">
+      {{ artistError }}
+    </div>
+
+    <!-- 正常内容 -->
+    <ng-container *ngIf="!artistLoading && !artistError">
+      <!-- 如果没有 artistInfo，就给个提示 -->
+      <p *ngIf="!artistInfo" class="empty-text">
+        No artist info for this event.
+      </p>
+
+      <!-- 有 artistInfo 时显示歌手卡片 -->
+      <div *ngIf="artistInfo as a" class="artist-header">
+        <!-- 左侧封面 -->
+        <div class="artist-cover" *ngIf="a.imageUrl">
+          <img [src]="a.imageUrl" [alt]="a.name || 'Artist photo'" />
+        </div>
+
+        <!-- 右侧信息 -->
+        <div class="artist-meta">
+          <h2>{{ a.name || 'Unknown artist' }}</h2>
+
+          <div class="artist-stats">
+            <span *ngIf="a.followers !== null && a.followers !== undefined">
+              Followers: {{ a.followers }}
+            </span>
+
+            <span *ngIf="a.popularity !== null && a.popularity !== undefined">
+              Popularity: {{ a.popularity }}%
+            </span>
+
+            <span *ngIf="a.genres?.length">
+              Genres: {{ a.genres.join(', ') }}
+            </span>
+          </div>
+
+          <a
+            *ngIf="a.spotifyUrl"
+            class="spotify-button"
+            [href]="a.spotifyUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in Spotify ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Albums 列表 -->
+      <section class="albums-section" *ngIf="artistAlbums?.length">
+        <h3>Albums</h3>
+
+        <div class="albums-grid">
+          <div class="album-card" *ngFor="let album of artistAlbums">
+            <div class="album-cover">
+              <img
+                *ngIf="album.imageUrl"
+                [src]="album.imageUrl"
+                [alt]="album.name"
+              />
+            </div>
+
+            <div class="album-info">
+              <div class="album-title">{{ album.name }}</div>
+              <div class="album-meta">
+                <span *ngIf="album.releaseDate">
+                  {{ album.releaseDate }}
+                </span>
+                <span
+                  *ngIf="
+                    album.totalTracks !== null && album.totalTracks !== undefined
+                  "
+                >
+                  · {{ album.totalTracks }} tracks
+                </span>
+              </div>
+
+              <a
+                *ngIf="album.spotifyUrl"
+                class="album-link"
+                [href]="album.spotifyUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on Spotify
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 没有专辑时的小提示 -->
+      <p
+        *ngIf="artistInfo && (!artistAlbums || !artistAlbums.length)"
+        class="empty-text"
+      >
+        No albums found for this artist.
+      </p>
+    </ng-container>
+  </div>
+
+  <!-- Venue 主体 -->
+  <div class="venue-main" [hidden]="activeTab !== 'venue'">
+    <!-- 头部：左边 名称 + 地址 + 地图按钮，右边 See Events -->
+    <div class="venue-header">
+      <div>
+        <h2 class="venue-name">
+          {{ event?.venue || event?.venue?.name || event?.venue || 'Venue N/A' }}
+        </h2>
+
+        <div class="venue-address">
+          <span>
+            {{ venueAddressLine || 'Address N/A' }}
+          </span>
+
+          <!-- 地址按钮：跳转到 Google Maps -->
+          <a
+            *ngIf="googleMapsUrl"
+            class="venue-map-btn"
+            [href]="googleMapsUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- See Events 按钮：跳转 Ticketmaster 场馆页 -->
+      <div class="venue-actions">
+        <a
+          *ngIf="venueSeeEventsUrl"
+          class="venue-events-btn"
+          [href]="venueSeeEventsUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          See Events ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- 主体布局：左图右文字 -->
+    <div class="venue-body">
+      <!-- 左侧场馆图片 -->
+      <div class="venue-image" *ngIf="venueImageUrl">
+        <img
+          [src]="venueImageUrl"
+          [alt]="event?.venue || event?.venue?.name || event?.venue || 'Venue'"
+        />
+      </div>
+
+      <!-- 右侧文字信息 -->
+      <div class="venue-details">
+        <div class="venue-section" *ngIf="event?.venueParking">
+          <h3>Parking</h3>
+          <p>{{ event?.venueParking }}</p>
+        </div>
+
+        <div class="venue-section" *ngIf="event?.venueGeneralRule">
+          <h3>General Rule</h3>
+          <p>{{ event?.venueGeneralRule }}</p>
+        </div>
+
+        <div class="venue-section" *ngIf="event?.venueChildRule">
+          <h3>Child Rule</h3>
+          <p>{{ event?.venueChildRule }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

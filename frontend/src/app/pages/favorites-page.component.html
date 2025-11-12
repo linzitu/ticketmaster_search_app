@@ -1,0 +1,59 @@
+<section class="page favorites-page">
+  <h1 class="page-title">Favorites</h1>
+
+  <!-- 没有收藏时的提示 -->
+  <div class="no-favorites" *ngIf="noFavorites">
+    <div class="hint-icon">♡</div>
+    <div class="hint-text">
+      No favorite events yet.
+    </div>
+  </div>
+
+  <!-- 收藏列表：卡片样式与搜索页统一 -->
+  <div class="results-container" *ngIf="!noFavorites">
+    <div
+      class="event-card"
+      *ngFor="let ev of favorites"
+      (click)="goToDetail(ev.id)"
+    >
+      <div class="event-image-wrapper">
+        <img
+          class="event-image"
+          [src]="ev.imageUrl"
+          [alt]="ev.name"
+        />
+
+        <div class="event-date-pill" *ngIf="ev.date || ev.time">
+          {{ ev.date }}
+          <span *ngIf="ev.time">, {{ ev.time }}</span>
+        </div>
+      </div>
+
+      <div class="event-info">
+        <div class="event-main">
+          <div class="event-name">
+            {{ ev.name }}
+          </div>
+
+          <div class="event-venue">
+            {{ ev.venue }}
+          </div>
+        </div>
+
+        <button
+        class="favorite-btn"
+        type="button"
+        (click)="toggleFavorite(ev, $event)"
+      >
+        <span
+          class="heart-icon"
+          [class.heart-filled]="favoriteService.isFavorite(ev.id)"
+        >
+            ♥
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+</section>
