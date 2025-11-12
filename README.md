@@ -5,7 +5,7 @@
 
 **Deployed URL:** [https://myfirstpython-0615.uw.r.appspot.com/search](https://myfirstpython-0615.uw.r.appspot.com/search)  
 **Source Code:** [GitHub Repository](https://github.com/linzitu/ticketmaster_search_app)
-**Github URL:** [https://linzitu.github.io/fewj8g8u3.html]
+**Github URL:** [https://linzitu.github.io/fewj8g8u3.html](https://linzitu.github.io/fewj8g8u3.html)
 ---
 
 ## 🧩 Overview
