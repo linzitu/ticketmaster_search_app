@@ -375,6 +375,68 @@ const angularDistPath = path.join(
 );
 
 console.log('Serving Angular from:', angularDistPath);
+// ✅ 先注册 API 路由
+// ✅ 新增：统一的 /api/search 路由（返回 Ticketmaster JSON）
+app.get("/api/search", async (req, res) => {
+  try {
+    if (!tmApiKey) {
+      return res.status(500).json({ error: "Ticketmaster API key not configured" });
+    }
+
+    // 从 query 取参数
+    const {
+      keyword = "",
+      category = "All",
+      distance = 10,
+      lat,
+      lon,
+      autoDetectLocation
+    } = req.query;
+
+    // 基本 URL
+    const url = `${tmBaseUrl}/events.json`;
+
+    // 拼参数
+    const params = {
+      apikey: tmApiKey,
+      keyword: keyword || "",
+      radius: distance || 10,
+      sort: "date,asc",
+      size: 20,
+    };
+
+    // 如果传了经纬度就用它
+    if (lat && lon) {
+      params.latlong = `${lat},${lon}`;
+    }
+
+    // 如果传了分类
+    if (category && category !== "All") {
+      // Ticketmaster 的分类用 segmentId 或 classificationName
+      params.segmentName = category;
+    }
+
+    // 发请求到 Ticketmaster
+    const response = await axios.get(url, { params });
+    const data = response.data;
+
+    // 检查是否有结果
+    if (!data._embedded || !data._embedded.events) {
+      return res.json([]);
+    }
+
+    // 映射成前端需要的结构
+    const events = data._embedded.events.map(mapTmEventToFrontend);
+
+    // 返回 JSON
+    res.json(events);
+
+  } catch (err) {
+    console.error("Error in /api/search:", err.response?.data || err.message);
+    res.status(500).json({ error: "Failed to fetch events from Ticketmaster" });
+  }
+});
+
 
 // 2. 先托管静态文件（main.xxx.js、styles.xxx.css 等）
 app.use(express.static(angularDistPath));

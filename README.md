@@ -47,7 +47,7 @@ It was built using **Angular (Frontend)**, **Node.js + Express (Backend)**, and 
 ### 1️⃣ Clone the repository
 ```bash
 git clone https://github.com/linzitu/ticketmaster_search_app.git
-cd angular_express
+cd ticketmaster_search_app-main
 ```
 
 ### 2️⃣ Backend Setup
@@ -56,7 +56,7 @@ cd backend
 npm install
 ```
 Create a `.env` file inside `backend/` containing your API keys:
-```
+```git add .
 TICKETMASTER_API_KEY=your_key
 SPOTIFY_CLIENT_ID=your_id
 SPOTIFY_CLIENT_SECRET=your_secret
